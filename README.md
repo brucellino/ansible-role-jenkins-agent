@@ -1,4 +1,4 @@
-![CI](https://github.com/brucellino/ansible-role-jenkins-agent/actions/workflows/main/badge.svg)
+![CI](https://github.com/brucellino/ansible-role-jenkins-agent/actions/workflows/main.yml/badge.svg)
 
 # jenkins-agent
 
