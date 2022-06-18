@@ -1,0 +1,20 @@
+# Main workflow for github actions
+# This includes the steps for linting and testing the role as well as 
+# building the image
+name: main
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "README.md"
+  pull_request_target:
+    branches:
+      - main
+jobs:
+  # The build job runs on all commit events including to the main branch
+  # and to the pull request branch
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
