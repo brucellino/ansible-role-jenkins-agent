@@ -36,13 +36,8 @@ repos:
     rev: v1.2.0
     hooks:
       - id: detect-secrets
-        exclude: package-lock.json
-
-  - repo: local
+  - repo: https://github.com/ansible-community/ansible-lint.git
+    rev: v6.3.0
     hooks:
-    - id: ansible_lint
-      name: Ansible Lint
-      entry: ansible-lint --exclude .pipeline --exclude .pre-commit-config.yaml --exclude .github/
-      always_run: true
-      verbose: true
-      language: system
+      - id: ansible-lint
+  

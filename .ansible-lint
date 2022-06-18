@@ -1,0 +1,7 @@
+---
+exclude_paths:
+  - .pipeline
+  - .releaserc.yml
+  - .yamllint
+  - .pre-commit-config.yaml
+  - .github/
