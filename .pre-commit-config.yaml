@@ -1,0 +1,43 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: detect-aws-credentials
+      - id: detect-private-key
+  - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
+    rev: v5.0.0
+    hooks:
+      - id: commitlint
+        stages: [commit-msg]
+        additional_dependencies: ['@commitlint/config-conventional']
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 2.1.5
+    hooks:
+      - id: forbid-binary
+      - id: git-dirty  # Configure in .gitignore
+      - id: markdownlint # Configure in .mdlrc
+      - id: shellcheck
+      - id: shfmt
+  - repo: https://github.com/PyCQA/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.1.0
+    hooks:
+      - id: detect-secrets
+        exclude: package-lock.json
+
+  - repo: local
+    hooks:
+    - id: ansible_lint
+      name: Ansible Lint
+      entry: ansible-lint --exclude .pipeline --exclude .pre-commit-config.yaml
+      always_run: true
+      verbose: true
+      language: system
