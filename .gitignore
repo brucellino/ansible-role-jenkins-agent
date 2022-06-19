@@ -138,3 +138,6 @@ override.tf.json
 terraform.rc
 .pipeline/ansible-default.cfg
 .pipeline/inventory-default.ini
+
+# Ignore editor cruft
+.vscode/
