@@ -1,0 +1,18 @@
+---
+# defaults file for ansible-role-jenkins-jnlp
+prerequisite_packages:
+  debian:
+    # - openjdk-11-jre-headless
+    - curl
+    - python3
+    - python3-pip
+    - git
+    - unzip
+version: 4.7
+
+# Vault version
+vault_version: 1.10.4
+# List of vault agent templates to provision
+vault_templates:
+  - profile
+  - ssh_key

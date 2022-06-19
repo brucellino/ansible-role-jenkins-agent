@@ -1,0 +1,42 @@
+---
+# Tasks for configuring the Vault Agent
+- name: Get Vault
+  ansible.builtin.unarchive:
+    src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: /usr/bin
+    creates: /usr/bin/vault
+    remote_src: True
+    validate_certs: True
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Ensure Vault config dir
+  ansible.builtin.file:
+    path: /etc/vault/templates
+    state: directory
+    recurse: True
+    mode: 0777
+    owner: root
+    group: root
+
+- name: Copy vault agent configuration
+  ansible.builtin.copy:
+    dest: /etc/vault/vault-agent.hcl
+    src:  etc/vault/vault-agent.hcl
+    backup: True
+    mode: 0444
+    directory_mode: True
+    owner: root
+    group: root
+
+- name: Copy Vault Templates
+  ansible.builtin.copy:
+    dest: "/etc/vault/templates/{{ item }}.ctmpl"
+    src: "etc/vault/templates/{{ item }}.ctmpl"
+    backup: True
+    mode: 0444
+    directory_mode: True
+    owner: root
+    group: root
+  loop: "{{ vault_templates }}"

@@ -1,0 +1,1 @@
+{{ with secret "kv/jenkins" }}{{ .Data.data.sshkey_svc_jenkins_spinnaker }}{{end}}
