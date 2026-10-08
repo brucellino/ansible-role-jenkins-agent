@@ -1,5 +1,8 @@
 ---
 # tasks file for ansible-role-jenkins-jnlp
-- import_tasks: prepare.yml
-- import_tasks: prerequisites.yml
-- import_tasks: vault-agent.yml
+- name: Prepare
+  ansible.builtin.import_tasks: prepare.yml
+- name: Add prerequisites
+  ansible.builtin.import_tasks: prerequisites.yml
+- name: Configure Vault Agent
+  ansible.builtin.import_tasks: vault-agent.yml

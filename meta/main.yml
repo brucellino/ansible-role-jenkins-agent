@@ -8,11 +8,9 @@ galaxy_info:
   license: MIT
   min_ansible_version: 2.9.2
   platforms:
-  - name: Ubuntu
-    versions:
-      - 18.04
-      - 18.10
-      - 20.04
-      - 20.10
+    - name: Ubuntu
+      versions:
+        - jammy
+        - kinetic
   galaxy_tags: []
 dependencies: []

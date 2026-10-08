@@ -1,0 +1,14 @@
+[env]
+_.python.venv = { path = ".venv", create = true }
+
+[settings]
+python.uv_venv_auto = "create|source"
+
+[tools]
+python = "3.14"
+uv = "0.12.23"
+prek = "0.5.5"
+
+[tasks.install_deps]
+description = "Install Ansible dependencies"
+run = "uv pip install ansible ansible-lint"
