@@ -19,19 +19,15 @@ repos:
     hooks:
       - id: commitlint
         stages: [commit-msg]
-        additional_dependencies: ['@commitlint/config-conventional']
+        additional_dependencies: ["@commitlint/config-conventional"]
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: "3.0.0"
     hooks:
       - id: forbid-binary
-      - id: git-dirty  # Configure in .gitignore
+      - id: git-dirty # Configure in .gitignore
       - id: markdownlint # Configure in .mdlrc
       - id: shellcheck
       - id: shfmt
-  - repo: https://github.com/PyCQA/flake8
-    rev: "7.4.1"
-    hooks:
-      - id: flake8
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
@@ -40,4 +36,3 @@ repos:
     rev: v26.9.0
     hooks:
       - id: ansible-lint
-  

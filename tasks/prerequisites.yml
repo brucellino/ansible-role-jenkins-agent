@@ -6,13 +6,13 @@
     name: "{{ item }}"
     use: auto
     update_cache: true
-  loop: "{{ prerequisite_packages[ansible_os_family | lower ] }}"
+  loop: "{{ prerequisite_packages[ansible_os_family | lower] }}"
 
 - name: Ensure jenkins group is present
   ansible.builtin.group:
     name: jenkins
     state: present
-    gid: '1000'
+    gid: "1000"
 
 - name: Ensure jenkins user is present
   ansible.builtin.user:
@@ -22,27 +22,27 @@
     create_home: true
     groups: jenkins
     append: true
-    uid: '1000'
-    group: '1000'
-    shell: '/bin/bash'
+    uid: "1000"
+    group: "1000"
+    shell: "/bin/bash"
     state: present
 
 - name: Ensure Jenkins SSH directory is present
   ansible.builtin.file:
     path: /home/jenkins/.ssh
     state: directory
-    recurse: True
-    mode: 0755
+    recurse: true
+    mode: "0755"
     owner: jenkins
     group: jenkins
 
 - name: Create SSH config for jenkins user
   ansible.builtin.copy:
     dest: /home/jenkins/.ssh/config
-    src:  home/jenkins/.ssh/config
-    backup: True
-    mode: 0644
-    directory_mode: True
+    src: home/jenkins/.ssh/config
+    backup: true
+    mode: "0644"
+    directory_mode: true
     owner: jenkins
     group: jenkins
 
@@ -52,7 +52,7 @@
     group: jenkins
     state: directory
     owner: jenkins
-    mode: 0755
+    mode: "0755"
 
 - name: Get the remoting library
   ansible.builtin.get_url:
@@ -60,7 +60,7 @@
     url: "https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/{{ version }}/remoting-{{ version }}.jar"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
     validate_certs: true
 
 - name: Copy agent start script
@@ -70,8 +70,8 @@
     backup: true
     owner: jenkins
     group: jenkins
-    mode: 0744
-    force: True
+    mode: "0744"
+    force: true
 
 - name: 🖤
   ansible.builtin.file:

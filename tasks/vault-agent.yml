@@ -5,9 +5,9 @@
     src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
     dest: /usr/bin
     creates: /usr/bin/vault
-    remote_src: True
-    validate_certs: True
-    mode: 0777
+    remote_src: true
+    validate_certs: true
+    mode: "0777"
     owner: root
     group: root
 
@@ -15,18 +15,18 @@
   ansible.builtin.file:
     path: /etc/vault/templates
     state: directory
-    recurse: True
-    mode: 0777
+    recurse: true
+    mode: "0777"
     owner: root
     group: root
 
 - name: Copy vault agent configuration
   ansible.builtin.copy:
     dest: /etc/vault/vault-agent.hcl
-    src:  etc/vault/vault-agent.hcl
-    backup: True
-    mode: 0444
-    directory_mode: True
+    src: etc/vault/vault-agent.hcl
+    backup: true
+    mode: "0444"
+    directory_mode: true
     owner: root
     group: root
 
@@ -34,9 +34,9 @@
   ansible.builtin.copy:
     dest: "/etc/vault/templates/{{ item }}.ctmpl"
     src: "etc/vault/templates/{{ item }}.ctmpl"
-    backup: True
-    mode: 0444
-    directory_mode: True
+    backup: true
+    mode: "0444"
+    directory_mode: true
     owner: root
     group: root
   loop: "{{ vault_templates }}"
