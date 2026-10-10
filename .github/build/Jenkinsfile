@@ -1,0 +1,166 @@
+// Jenkinsfile for default builder
+
+// Set role name
+def role_name = 'ansible-role-jenkins-agent'
+// Set directory where we will bake the image from
+def bake_dir = role_name + '/.pipeline'
+// Packer version to use for baking the image
+packer_version = '1.7.4'
+// Initial slack message which this pipeline will reply to.
+def slackResponse = slackSend(
+  channel: '#devops-ansible-roles',
+  message: ":ansible: ${BUILD_TAG} started",
+  tokenCredentialId: 'slack_bot_token'
+)
+
+pipeline {
+  agent none
+  triggers {
+    githubPullRequests events: [
+                        Open(),
+                        commitChanged(),
+                        commentPattern('^.*test please.*$')],
+                       preStatus: true,
+                       spec: '',
+                       triggerMode: 'HEAVY_HOOKS'
+  }
+
+  options{
+    checkoutToSubdirectory role_name
+    buildDiscarder(logRotator(numToKeepStr: "5"))
+    allowBrokenBuildClaiming()
+  }
+  environment {
+    AWS_REGION='eu-central-1'
+  }
+  stages {
+    stage('Lint') {
+      /*
+        This stage checks the syntactic correctness of the
+        Ansible role and tests.
+        These steps should be run on all PRs as well as the mainline branch
+       */
+      agent { label 'ecs-next' }
+      steps {
+        dir(role_name) {
+          sh 'env'
+          sh label: 'Lint Ansible',
+             script: '''
+pip3 install --user -r .pipeline/requirements.txt
+export PATH=$PATH:$HOME/.local/bin
+ansible-lint --exclude=.pipeline -x 403
+flake8'''
+        } // dir
+        dir(bake_dir) {
+          sh label: 'Packer Validate',
+             script: """
+set +x -e
+export VAULT_TOKEN=\$(cat /tmp/.token)
+export PATH=${env.PATH}:${env.HOME}/.local/bin
+curl -sSL https://releases.hashicorp.com/packer/${packer_version}/packer_${packer_version}_linux_amd64.zip \
+  | gunzip -> ${env.HOME}/.local/bin/packer
+chmod u+x ${env.HOME}/.local/bin/packer
+curl -s -X GET -H "X-Vault-Token: \${VAULT_TOKEN}" \${VAULT_ADDR}/v1/aws/infra/creds/bake > infra.json
+packer validate packer.pkr.hcl"""
+        } // dir
+      } // Steps
+      post {
+        failure{
+          slackSend(
+            channel: slackResponse.threadId,
+            message: ":ansible: :packer: 🐍 💢",
+            tokenCredentialId: 'slack_bot_token',
+            replyBroadcast: true
+          )
+        }
+        success{
+          slackSend(
+            channel: slackResponse.threadId,
+            message: ":ansible: :packer: 🐍 ✅",
+            tokenCredentialId: 'slack_bot_token'
+          )
+        }
+      } // Lint post steps
+    } // Lint stage
+
+    stage('Converge and Verify') {
+      agent { label 'bake-agent-ec2' }
+      steps {
+        dir(bake_dir) {
+          sh label: 'Converge Test Instance',
+             script: '. /opt/virtualenv/bake/bin/activate ; ansible-playbook playbook.yml'
+          sh label: 'Verify',
+             script: '''
+pip3 install --user pytest-testinfra
+${HOME}/.local/bin/py.test \
+  --junit-xml junit.xml \
+  --hosts=docker://jenkins@jenkins_agent \
+  test_user.py test_spin.py'''
+          junit allowEmptyResults: true,
+                testDataPublishers: [[$class: 'ClaimTestDataPublisher']],
+                testResults: 'junit.xml'
+        }
+      }
+      post {
+        failure{
+          slackSend(
+            channel: slackResponse.threadId,
+            message: "${role_name} Tests failed",
+            tokenCredentialId: 'slack_bot_token',
+            replyBroadcast: true
+          )
+        }
+        success{
+          slackSend(
+            channel: slackResponse.threadId,
+            message: "${role_name} Tests passed ✅",
+            tokenCredentialId: 'slack_bot_token'
+          )
+        }
+      } // Lint post steps
+    }
+
+    stage('Release') {
+      agent { label 'build-agent-ecs' }
+      when {
+        branch 'master'
+        beforeAgent true
+      }
+      steps {
+        // This will be implemented when we have vault-agent on build-agent
+        echo 'not implemented yet'
+
+      }
+      post{
+        failure{
+          slackSend(
+            channel: slackResponse.threadId,
+            message: "${role_name} release failed",
+            tokenCredentialId: 'slack_bot_token',
+            replyBroadcast: true
+          )
+        }
+      }
+    }
+
+    stage('Bake'){
+      agent { label 'bake-agent-ecs' }
+      when {
+        branch 'master'
+        beforeAgent true
+      }
+      steps{
+        // This will be implemented when we have vault-agent on bake-agent
+        echo 'not implemented yet'
+      }
+      post{
+        success{
+            echo "====+++'Bake executed successfully++++=='="
+        }
+        failure{
+            echo "====+++'Bake execution failed++++=='="
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,20 @@
+---
+- name: Prepare container
+  hosts: jenkins_agents
+  gather_facts: false
+  tasks:
+    - name: Add python3
+      raw: "apt-get update -qq ; apt-get install -y python3-minimal"
+      changed_when: false
+
+- name: Converge
+  hosts: jenkins_agents
+  become: true
+  roles:
+    - role: ansible-role-jenkins-agent
+  post_tasks:
+    - name: clean up apt
+      apt:
+        autoremove: true
+        autoclean: true
+        update_cache: false
