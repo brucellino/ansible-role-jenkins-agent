@@ -6,7 +6,7 @@ python.uv_venv_auto = "create|source"
 
 [tools]
 python = "3.14"
-uv = "0.12.23"
+uv = "0.13.0"
 prek = "0.5.5"
 
 [tasks.install_deps]
