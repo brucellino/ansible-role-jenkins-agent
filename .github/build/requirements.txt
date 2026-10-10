@@ -1,7 +1,7 @@
 ansible==12.2.0
 ansible-lint==5.1.2
 pytest==9.0.3
-pytest-forked==1.3.0
+pytest-forked==1.7.5
 pytest-testinfra==6.4.0
 pytest-xdist==2.3.0
 testinfra==3.4.0
