@@ -6,4 +6,4 @@ pytest-testinfra==6.4.0
 pytest-xdist==2.3.0
 testinfra==3.4.0
 flake8==3.7.9
-packaging==20.3
+packaging==20.9
