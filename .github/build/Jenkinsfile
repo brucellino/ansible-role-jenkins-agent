@@ -49,7 +49,7 @@ pipeline {
 pip3 install --user -r .pipeline/requirements.txt
 export PATH=$PATH:$HOME/.local/bin
 ansible-lint --exclude=.pipeline -x 403
-flake8'''
+ruff check .'''
         } // dir
         dir(bake_dir) {
           sh label: 'Packer Validate',
