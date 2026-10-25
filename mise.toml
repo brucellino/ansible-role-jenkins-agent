@@ -8,4 +8,4 @@
 "pipx:ansible-lint" = "26.10.1"
 
 prek = "0.5.7"
-ruff = "0.17.1"
+ruff = "0.17.2"
