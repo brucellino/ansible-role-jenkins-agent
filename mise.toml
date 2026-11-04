@@ -3,7 +3,7 @@
 [settings]
 
 [tools]
-"pipx:ansible" = "14.5.0"
+"pipx:ansible" = "14.6.0"
 "pipx:ansible-core" = "2.21.5"
 "pipx:ansible-lint" = "26.10.1"
 
